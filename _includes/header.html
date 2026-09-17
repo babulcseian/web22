@@ -1,0 +1,110 @@
+<style>
+/* ── Navbar — matched to lijunrio.github.io/junli's actual colors ── */
+.site-nav-outer{
+  position:sticky;top:0;z-index:1000;
+  background:linear-gradient(135deg,#e8f4fd 0%,#d1e7dd 100%);
+  box-shadow:0 2px 15px rgba(52,152,219,.15);
+  transition:box-shadow .2s ease;
+}
+.site-nav-outer.scrolled{
+  box-shadow:0 4px 20px rgba(52,152,219,.22);
+}
+
+.site-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;
+  padding:.7rem 1.2rem;
+}
+.site-nav-brand{
+  text-decoration:none;
+  font-size:1.3rem;font-weight:800;color:#2980b9;
+  letter-spacing:-.01em;
+}
+.site-nav-brand:hover{color:#21618c}
+
+.site-nav-links{
+  display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;
+}
+.site-nav-links a{
+  font-size:.92rem;font-weight:700;color:#34495e;
+  text-decoration:none;
+  padding:.4rem .7rem;border-radius:25px;
+  transition:all .25s ease;
+  white-space:nowrap;
+}
+.site-nav-links a:hover{background-color:#3498db;color:#fff;transform:translateY(-2px)}
+.site-nav-links a.active{background-color:#2980b9;color:#fff}
+.site-nav-links a.nav-cv{
+  color:#2980b9;font-weight:700;
+  border:1.5px solid #aed6f1;
+}
+.site-nav-links a.nav-cv:hover{background-color:#3498db;border-color:#3498db;color:#fff}
+
+/* Hamburger (mobile) */
+.nav-toggle{
+  display:none;flex-direction:column;gap:4px;cursor:pointer;
+  padding:.4rem;border:none;background:transparent;
+}
+.nav-toggle span{
+  display:block;width:22px;height:3px;
+  background:#2980b9;border-radius:2px;
+}
+
+@media(max-width:680px){
+  .nav-toggle{display:flex}
+  .site-nav-links{
+    display:none;flex-direction:column;align-items:flex-start;gap:.25rem;
+    width:100%;
+    padding-top:.8rem;margin-top:.6rem;
+    border-top:1px solid rgba(41,128,185,.15);
+  }
+  .site-nav-links.open{display:flex}
+  .site-nav-links a{width:100%}
+  .site-nav-links a.nav-cv{width:auto;margin-top:.3rem}
+}
+</style>
+
+<div class="site-nav-outer" id="site-nav-outer">
+  <nav class="site-nav col-lg-8 mx-auto" role="navigation" aria-label="Main navigation">
+
+    <a class="site-nav-brand" href="{{ site.github.url }}/">{{ site.title }}</a>
+
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false"
+      onclick="var m=document.getElementById('nav-menu');var open=m.classList.toggle('open');this.setAttribute('aria-expanded',open)">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="site-nav-links" id="nav-menu" role="menubar">
+      {% for item in site.data.settings.menu %}
+        {% if item.name == "CV" %}
+          <a class="nav-cv" href="{{ site.github.url }}/publications/Md_Babul_Islam_CV_2023.pdf"
+             target="_blank" rel="noopener">CV</a>
+        {% elsif item.name == "Services" %}
+          <a href="{{ site.github.url }}/services"
+            {% if page.url == "/services" or page.url == "/services/" %}class="active"{% endif %}>
+            {{ item.name }}
+          </a>
+        {% else %}
+          {% assign url_slash = item.url | append: "/" %}
+          <a href="{{ site.github.url }}{{ item.url }}"
+            {% if page.url == item.url or page.url == url_slash %}class="active"{% endif %}>
+            {{ item.name }}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </nav>
+</div>
+
+<script>
+(function(){
+  var el = document.getElementById('site-nav-outer');
+  if(!el) return;
+  function onScroll(){
+    if(window.scrollY > 8){ el.classList.add('scrolled'); }
+    else { el.classList.remove('scrolled'); }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+</script>

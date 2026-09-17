@@ -1,0 +1,130 @@
+#
+# TUTORIALS DATA FILE
+# ====================
+# To add a new tutorial, copy one block below and fill in the fields.
+# All fields are optional except title and date.
+# image: put the filename only (no path), file goes in assets/img/tutorials/
+#   Use dashes not spaces: "my-tutorial.jpg" not "my tutorial.jpg"
+#
+- id: tut1
+  title: "IoT Sensors + Digital Twin for HVAC Smart Building Control"
+  date: "Aug 2021"
+  read_time: "9 min"
+  category: "Smart Buildings"
+  image: "Omnia-Dataset.png"
+  image_dir: "paper/journal"
+  summary: "Build an unsupervised deep learning model for HVAC control using real IoT sensor data, digital twin simulation, LSTM and BiLSTM models with Keras + TensorFlow."
+  content: |
+    In this project, we aim to build a smart HVAC control system using data collected from
+    various IoT sensors installed in a smart home environment. The core idea is to develop a
+    <strong>digital twin</strong> of the HVAC system, which allows us to simulate, monitor, and
+    control the HVAC performance in real-time by leveraging sensor data.
+    <h5>Data Collection and IoT Sensor Integration</h5>
+    <p>We collected real-world data from multiple IoT sensors measuring
+    <strong>temperature, humidity, CO₂ levels,</strong> and <strong>energy consumption</strong>.
+    This dataset serves as the foundation for our predictive models.</p>
+    <h5>Building Predictive Models with LSTM and BiLSTM</h5>
+    <p>We employed <strong>LSTM</strong> and <strong>Bidirectional LSTM (BiLSTM)</strong> models
+    to forecast environmental conditions. The BiLSTM analyses data in both forward and backward
+    directions, yielding more accurate predictions for fluctuating environments.</p>
+    <h5>Digital Twin Integration</h5>
+    <p>The digital twin continuously receives real-time sensor data, making predictions and
+    adjusting HVAC settings accordingly — improving comfort while reducing energy consumption.</p>
+  links:
+    - text: "Dataset & Code"
+      url: "https://github.com/babulcseian/babulcseian.github.io/blob/main/PhD%20Dataset/readme.md"
+
+- id: tut2
+  title: "Transformers for Time-Series Forecasting: From Basics to Smart Buildings"
+  date: "Feb 2022"
+  read_time: "12 min"
+  category: "Deep Learning"
+  image: "ibtec.jpg"
+  image_dir: "paper/journal"
+  summary: "Understand how the Transformer architecture applies to time-series problems, with practical examples from indoor temperature and soil moisture forecasting."
+  content: |
+    <p>Transformers have revolutionised NLP — but their attention mechanism is equally powerful
+    for time-series analysis. In this tutorial we walk through the key concepts: multi-head
+    self-attention, positional encoding, and why Transformers outperform LSTM on long-horizon
+    forecasting tasks in smart building environments.</p>
+    <h5>Why Transformers for Time Series?</h5>
+    <p>LSTMs process sequences step-by-step, making it hard to capture long-range dependencies.
+    Transformers attend to all time steps simultaneously, capturing seasonal patterns and
+    cross-sensor correlations that LSTMs miss.</p>
+    <h5>Practical Example: Indoor Temperature Forecasting</h5>
+    <p>We apply a TCN-Transformer hybrid (FedTemp) to the UNICAL Smart Laboratory dataset,
+    achieving state-of-the-art multi-step prediction across five rooms.</p>
+  links:
+    - text: "SoilFormer Paper"
+      url: "https://babulcseian.github.io/soil_sensors_data/"
+
+- id: tut3
+  title: "TinyML: Deploying Deep Learning on Microcontrollers"
+  date: "Mar 2023"
+  read_time: "15 min"
+  category: "TinyML"
+  image: "TinyLLM.jpg"
+  image_dir: "paper/journal"
+  summary: "A practical guide to model compression — pruning, quantisation, and knowledge distillation — to fit neural networks onto memory-constrained IoT devices."
+  content: |
+    <p>TinyML bridges the gap between powerful deep learning models and the extreme constraints
+    of embedded IoT devices (< 256 KB RAM). This tutorial covers the full compression pipeline
+    from a standard PyTorch/Keras model to a deployable binary.</p>
+    <h5>Pruning</h5>
+    <p>We remove unimportant weights using magnitude pruning, achieving up to 90% sparsity
+    with less than 2% accuracy loss on indoor sensor datasets.</p>
+    <h5>Post-Training Quantisation</h5>
+    <p>Converting float32 weights to int8 reduces model size by 4× and speeds up inference
+    on ARM Cortex-M by up to 3×. We demonstrate this on the iBTEC temperature model.</p>
+    <h5>TensorFlow Lite Deployment</h5>
+    <p>Step-by-step conversion from Keras → TFLite → C array, ready for Arduino / STM32.</p>
+  links:
+    - text: "iBTEC Paper"
+      url: "https://github.com/babulcseian/babulcseian.github.io/blob/main/PhD%20Dataset/readme.md"
+
+- id: tut4
+  title: "Federated Learning for Smart Buildings: Privacy-Preserving Forecasting"
+  date: "Jan 2024"
+  read_time: "18 min"
+  category: "Federated Learning"
+  image: "Soil-Monitoring-Station.jpg"
+  image_dir: "paper/journal"
+  summary: "Implement FedAvg and FedProx for distributed indoor temperature forecasting across multiple buildings, without sharing raw sensor data."
+  content: |
+    <p>Federated Learning trains a shared model across decentralised clients (buildings) without
+    exposing their private sensor data. This tutorial builds a federated temperature forecasting
+    system using the FedTemp framework.</p>
+    <h5>System Architecture</h5>
+    <p>Each building acts as a client, training a local TCN model on its own data. A central
+    aggregator combines the local model weights using FedAvg — no raw data ever leaves the
+    building.</p>
+    <h5>FedProx for Heterogeneous Data</h5>
+    <p>Real buildings have different occupancy patterns and HVAC systems (non-IID data).
+    FedProx adds a proximal term to prevent client drift, significantly improving convergence
+    in heterogeneous scenarios.</p>
+    <h5>Running the Code</h5>
+    <p>We use the UNICAL and AEI Energia datasets split across virtual clients, simulated
+    with Flower (flwr) framework.</p>
+  links:
+    - text: "FedTemp Paper"
+      url: "https://cyber-science.org/2025/picom/"
+
+- id: tut5
+  title: "A Beginner's Guide to Continual Learning in Deep Learning"
+  date: "Jun 2023"
+  read_time: "10 min"
+  category: "Deep Learning"
+  image: "prisma.jpg"
+  image_dir: "paper/journal"
+  summary: "Learn the basics of Continual Learning, its challenges (catastrophic forgetting), and its potential for building adaptive AI systems that learn over time."
+  content: |
+    <p>Neural networks suffer from <em>catastrophic forgetting</em> — when trained on a new task,
+    they rapidly forget old ones. Continual Learning aims to solve this, enabling models that
+    adapt to new data without losing past knowledge.</p>
+    <h5>Key Strategies</h5>
+    <p><strong>Regularisation-based</strong> (EWC, SI): penalise changes to important weights.<br>
+    <strong>Replay-based</strong> (Experience Replay, DGR): retain a memory buffer of past samples.<br>
+    <strong>Architecture-based</strong> (PNN, PackNet): allocate separate network capacity per task.</p>
+    <h5>Application to Smart Environments</h5>
+    <p>In smart buildings, occupancy patterns change seasonally. A continual learning approach
+    lets the forecasting model adapt to summer patterns without forgetting winter behaviour.</p>

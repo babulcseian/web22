@@ -1,0 +1,328 @@
+---
+layout: default
+---
+
+<!--
+  HOME PAGE
+  =========
+  To update your profile photo: replace the image file at
+    assets/img/Babul.jpg
+  (or change the src on line ~130 to point to any other filename)
+
+  To update memory photos: edit the src paths in the "Memories" section below.
+  All image files are in assets/img/ — use dash-separated names, no spaces.
+  e.g. "Md-Babul-Con.jpg" not "Md Babul Con.jpg"
+-->
+
+<style>
+/* ── Hero: two-column profile layout ─────────────── */
+.hero{display:grid;grid-template-columns:220px 1fr;gap:2rem;
+  align-items:start;margin-bottom:2.5rem}
+.hero-photo-card{
+  background:#fff;border:1px solid var(--blue-light);border-radius:18px;
+  padding:1.4rem 1.1rem;box-shadow:0 4px 20px rgba(41,128,185,.08);
+  display:flex;flex-direction:column;align-items:center;
+  box-sizing:border-box;
+  position:sticky;top:88px}
+.hero-photo-wrap{display:flex;flex-direction:column;align-items:center;gap:.9rem;
+  width:100%}
+.hero-photo{width:160px;height:160px;border-radius:50%;object-fit:cover;
+  border:4px solid var(--blue-light);
+  box-shadow:0 8px 32px rgba(13,148,136,.18);
+  transition:transform .3s,box-shadow .3s}
+.hero-photo:hover{transform:scale(1.03);
+  box-shadow:0 16px 40px rgba(13,148,136,.28)}
+.hero-social{display:flex;flex-direction:column;gap:.5rem;width:100%;max-width:220px}
+.hero-social a{display:flex;align-items:center;gap:.65rem;
+  padding:.55rem .8rem;border-radius:12px;
+  background:#fff;border:1px solid var(--blue-light);
+  color:#2c3e50;font-size:.87rem;font-weight:700;text-decoration:none;
+  transition:background .15s,transform .15s,box-shadow .15s}
+.hero-social a .soc-icon{
+  width:34px;height:34px;flex-shrink:0;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--blue-bg);color:var(--blue);font-size:1.1rem;
+  transition:background .15s,color .15s}
+.hero-social a:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(41,128,185,.15);
+  border-color:var(--blue)}
+.hero-social a:hover .soc-icon{background:var(--blue);color:#fff}
+
+.hero-card-spacer{flex:1;min-height:1rem}
+.hero-card-footer{width:100%;padding-top:1rem;margin-top:.5rem;
+  border-top:1px dashed var(--blue-light);
+  text-align:center;font-size:.8rem;color:#5d7a94;font-weight:600}
+
+.hero-bio{}
+.hero-name{font-size:1.9rem;font-weight:900;color:#2c3e50;margin:0 0 .15rem;line-height:1.2}
+.hero-role{font-size:1rem;color:var(--blue);font-weight:700;margin-bottom:.9rem}
+.hero-bio p{font-size:.97rem;color:#34495e;line-height:1.7;margin:.5rem 0;text-align:justify}
+.hero-bio a{color:var(--blue);font-weight:600;text-decoration:none;border-bottom:1px solid var(--blue-light)}
+.hero-bio a:hover{color:#21618c}
+
+/* Research interest tags */
+.interest-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.7rem 0}
+.i-tag{padding:.28rem .7rem;border-radius:999px;font-size:.78rem;font-weight:700;
+  background:#eaf6fd;border:1px solid var(--blue-light);color:var(--blue)}
+
+/* Thesis highlight box */
+.thesis-box{margin:.9rem 0;padding:.75rem 1rem;border-radius:10px;
+  background:linear-gradient(135deg,#eaf6fd,#eaf6fd);
+  border-left:4px solid var(--blue);font-size:.93rem}
+.thesis-box .t-label{font-weight:900;color:#21618c;margin-bottom:.25rem}
+.thesis-box .t-title{color:#2c3e50;font-style:italic;line-height:1.5}
+
+/* Current project ticker */
+.ticker{display:flex;align-items:center;gap:.5rem;font-size:.85rem;
+  color:#5d7a94;margin:.5rem 0;padding:.45rem .75rem;
+  border-radius:8px;background:#f8fafc;border:1px solid #e2e8f0}
+.ticker-dot{width:8px;height:8px;border-radius:50%;
+  background:var(--blue);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+/* Project quick links */
+.proj-links{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0}
+.proj-link{display:inline-flex;align-items:center;gap:.35rem;
+  padding:.35rem .75rem;border-radius:8px;font-size:.83rem;font-weight:700;
+  background:#f8fafc;border:1px solid #e2e8f0;color:#5d7a94;text-decoration:none;
+  transition:all .15s}
+.proj-link:hover{background:#eaf6fd;border-color:var(--blue-light);color:var(--blue)}
+
+/* Services teaser */
+.services-teaser{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:.6rem;padding:.85rem 1.4rem;margin:1.6rem 0;border-radius:14px;
+  background:#eaf6fd;border:1px solid #aed6f1;
+  cursor:pointer;text-decoration:none;transition:all .15s}
+.services-teaser:hover{background:#eaf6fd;border-color:#85c1e9;
+  transform:translateY(-1px)}
+.services-teaser span{color:#21618c;font-weight:800;font-size:.92rem}
+.services-chip{padding:.22rem .6rem;border-radius:999px;
+  background:#fff;border:1px solid #aed6f1;color:#21618c;font-size:.78rem;font-weight:700}
+
+/* Memories grid */
+.memories-section{margin:2rem 0}
+.memories-title{font-size:1rem;font-weight:800;color:#2c3e50;margin-bottom:.9rem;
+  display:flex;align-items:center;gap:.4rem}
+.memories-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+.mem-tile{
+  border-radius:12px;overflow:hidden;
+  position:relative;
+  height:180px;background:#eaf6fd;
+}
+.mem-tile.mem-wide{grid-column:span 2;height:200px}
+.mem-tile img{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  object-fit:cover;object-position:center top;
+  display:block;transition:transform .35s;
+}
+.mem-tile:hover img{transform:scale(1.04)}
+.mem-tile::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(15,23,42,.78) 0%,rgba(15,23,42,.25) 42%,transparent 68%);
+  pointer-events:none;
+  z-index:1;
+}
+.mem-caption{
+  position:absolute;left:0;right:0;bottom:0;
+  z-index:2;padding:.55rem .7rem .5rem;
+  text-align:left;
+  color:#fff;font-weight:700;font-size:.78rem;line-height:1.3;
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
+}
+
+/* ── Responsive ── */
+@media(max-width:680px){
+  .hero{grid-template-columns:1fr;gap:1.5rem}
+  .hero-photo-card{height:auto;position:static}
+  .hero-photo-wrap{flex-direction:column;align-items:center;gap:1rem}
+  .hero-social{max-width:280px}
+  .hero-photo{width:100px;height:100px}
+  .hero-name{font-size:1.4rem}
+  .memories-grid{grid-template-columns:repeat(2,1fr)}
+  .mem-tile{height:130px}
+  .mem-tile.mem-wide{grid-column:span 2;height:140px}
+  .mem-tile img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+}
+</style>
+
+<!-- ── HERO ─────────────────────────────────────── -->
+<div class="hero">
+
+  <!-- Left column: photo + social links, in a card that stretches to
+       match the bio column's height automatically — add or remove
+       text on the right and this card resizes with it. -->
+  <div class="hero-photo-card">
+  <div class="hero-photo-wrap">
+    <!--
+      PROFILE PHOTO: change the src below to your photo filename.
+      File must be in assets/img/ with NO SPACES in the name.
+      e.g. src="{{ site.github.url }}/assets/img/your-photo.jpg"
+    -->
+    <img class="hero-photo"
+         src="{{ site.github.url }}/assets/img/Babul.jpg"
+         alt="Md Babul Islam"
+         onerror="this.style.opacity='0.3'">
+
+    <!-- Social links — edit the href values in settings.yml or directly here -->
+    <div class="hero-social">
+      <a href="https://scholar.google.com/citations?user=Zaf5EhQAAAAJ" target="_blank" rel="noopener">
+        <span class="soc-icon"><i class="ai ai-google-scholar"></i></span> Google Scholar</a>
+      <a href="https://github.com/babulcseian" target="_blank" rel="noopener">
+        <span class="soc-icon"><i class="fab fa-github"></i></span> GitHub</a>
+      <a href="https://www.linkedin.com/in/babulcseian/" target="_blank" rel="noopener">
+        <span class="soc-icon"><i class="fab fa-linkedin"></i></span> LinkedIn</a>
+      <a href="https://orcid.org/0000-0003-1054-3036" target="_blank" rel="noopener">
+        <span class="soc-icon"><i class="fab fa-orcid"></i></span> ORCID</a>
+      <a href="https://www.webofscience.com/wos/author/record/AFA-6874-2022" target="_blank" rel="noopener">
+        <span class="soc-icon"><i class="ai ai-clarivate"></i></span> Web of Science</a>
+      <a href="{{ site.github.url }}/publications/Md_Babul_Islam_CV_2023.pdf" target="_blank" rel="noopener">
+        <span class="soc-icon"><i class="fas fa-file-alt"></i></span> Download CV</a>
+    </div>
+  </div>
+
+  <!-- This spacer expands to fill any leftover height in the card,
+       pushing the footer below to the bottom — this is what makes
+       the card automatically match the bio column's length. -->
+  <div class="hero-card-spacer"></div>
+  <div class="hero-card-footer">📍 Rende, Cosenza, Italy</div>
+  </div>
+
+  <!-- Right column: bio -->
+  <div class="hero-bio">
+    <h1 class="hero-name">Md Babul Islam</h1>
+    <div class="hero-role">Ph.D. Scholar · University of Calabria &amp; University College Dublin</div>
+
+    <p>A research enthusiast who completed his Ph.D. with a fully funded scholarship at the School of ICT,
+      <a href="https://dottorato.dimes.unical.it/students/md-babul-islam">University of Calabria (Italy)</a>,
+      and <a href="https://www.ucd.ie/">University College Dublin (Ireland)</a>.
+      He holds an M.Sc. in Information Engineering from Huzhou University, China, and a B.Sc. in Computer Science
+      and Engineering from City University, Bangladesh.</p>
+
+    <p>He gained valuable experience as a lecturer at the Micro Institute of Technology (2018–2019) and later
+      as a data scientist at Zhejiang Seating Technology in China. His research sits at the intersection of
+      <strong>TinyML</strong>, <strong>Edge AI</strong>, <strong>Digital Twins</strong>, <strong>Smart Buildings</strong>,
+      and <strong>Smart Agriculture</strong>.</p>
+
+    <div class="interest-tags">
+      <span class="i-tag">🧠 TinyML</span>
+      <span class="i-tag">🤖 Applied Deep Learning</span>
+      <span class="i-tag">⚡ IoT Energy Efficiency</span>
+      <span class="i-tag">🏢 Smart Buildings</span>
+      <span class="i-tag">🌱 Smart Agriculture</span>
+      <span class="i-tag">🏥 AI Healthcare</span>
+      <span class="i-tag">🔗 Federated Learning</span>
+    </div>
+
+    <div class="thesis-box">
+      <div class="t-label">🎓 PhD Thesis</div>
+      <div class="t-title">"AI Driven Predictive Approaches in Smart Environment:
+        From Smart Buildings to Smart Agriculture"</div>
+    </div>
+
+    <div class="ticker">
+      <span class="ticker-dot"></span>
+      <strong>Current Project:</strong> Tiny Federated Learning in Smart Buildings 🏢
+    </div>
+
+    <p style="font-size:.9rem;color:#5d7a94;margin:.4rem 0 .3rem">
+      Supervisors:
+      <a href="https://www.icar.cnr.it/persone/guerrieri/">Dr. Antonio Guerrieri</a>,
+      Raffaele Gravina,
+      <a href="https://people.ucd.ie/declan.delaney">Declan Delaney</a>,
+      Giancarlo Fortino
+    </p>
+    <p style="font-size:.9rem;color:#5d7a94;margin:.3rem 0">
+      Future dream: <a href="https://babulcseian.github.io/lab">Applied Bahari Big Data Research House</a>
+    </p>
+
+    <div class="proj-links">
+      <a class="proj-link" href="https://github.com/babulcseian/babulcseian.github.io/blob/main/PhD%20Dataset/readme.md"
+         target="_blank">📦 Dataset &amp; Code</a>
+      <a class="proj-link" href="https://babulcseian.github.io/soil_sensors_data/"
+         target="_blank">🌱 Soil Sensors Project</a>
+      <a class="proj-link" href="{{ site.github.url }}/publications">📄 Publications</a>
+    </div>
+  </div>
+</div><!-- /hero -->
+
+<!-- ── SERVICES TEASER ── -->
+<a class="services-teaser" href="{{ site.github.url }}/services">
+  <span>👨‍💻 Babul's Services</span>
+  <span class="services-chip">Journal Reviewer</span>
+  <span class="services-chip">PC Member</span>
+  <span class="services-chip">Research Collaboration</span>
+</a>
+
+<!-- ── LATEST NEWS ── -->
+{% include news.html %}
+
+<!-- ── MEMORIES ────────────────────────────────────
+  HOW TO UPDATE PHOTOS:
+  1. Copy your photo into assets/img/ — filename must have NO SPACES
+     Good: "conference-italy-2024.jpg"   Bad: "my photo.jpg"
+  2. Add or replace a <div class="mem-tile"> block below
+  3. Set alt="" to describe the photo for accessibility
+  4. Set the text inside <span class="mem-caption"> — this is the
+     caption always shown as a small bar at the bottom of the photo
+  The grid auto-adjusts to any number of tiles.
+──────────────────────────────────────────────────── -->
+<div class="memories-section">
+  <div class="memories-title">📸 Some Memories</div>
+  <div class="memories-grid">
+
+    <div class="mem-tile mem-wide">
+      <img src="{{ site.github.url }}/assets/img/Md-Babul-Islalam-Group.jpg"
+           alt="Group photo" loading="lazy"
+           onerror="this.parentElement.style.display='none'">
+      <span class="mem-caption">Graduation — Huzhou University, China</span>
+    </div>
+
+    <div class="mem-tile">
+      <img src="{{ site.github.url }}/assets/img/Md-Babul-Con.jpg"
+           alt="Conference" loading="lazy"
+           onerror="this.parentElement.style.display='none'">
+      <span class="mem-caption">At a Conference</span>
+    </div>
+
+    <div class="mem-tile">
+      <img src="{{ site.github.url }}/assets/img/ISLAM-MD-BABUL.jpg"
+           alt="Graduation" loading="lazy"
+           onerror="this.parentElement.style.display='none'">
+      <span class="mem-caption">Graduation Day</span>
+    </div>
+
+    <div class="mem-tile mem-wide">
+      <img src="{{ site.github.url }}/assets/img/Unical-and-CNR.jpg"
+           alt="UNICAL and CNR" loading="lazy"
+           onerror="this.parentElement.style.display='none'">
+      <span class="mem-caption">University of Calabria &amp; ICAR-CNR</span>
+    </div>
+
+    <div class="mem-tile">
+      <img src="{{ site.github.url }}/assets/img/Md-Babul-Islam-with-Prof.jpg"
+           alt="With Professor" loading="lazy"
+           onerror="this.parentElement.style.display='none'">
+      <span class="mem-caption">With My Professor</span>
+    </div>
+
+    <div class="mem-tile">
+      <img src="{{ site.github.url }}/assets/img/Md-Babul-Islam-Lab.jpg"
+           alt="Lab" loading="lazy"
+           onerror="this.parentElement.style.display='none'">
+      <span class="mem-caption">In the Lab</span>
+    </div>
+
+    <div class="mem-tile">
+      <img src="{{ site.github.url }}/assets/img/Babul-Mosabber.jpg"
+           alt="With colleague" loading="lazy"
+           onerror="this.parentElement.style.display='none'">
+      <span class="mem-caption">With a Colleague</span>
+    </div>
+
+  </div>
+</div>
+

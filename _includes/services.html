@@ -1,0 +1,125 @@
+<style>
+.svc-intro{color:#5d7a94;font-size:.92rem;line-height:1.7;margin:0 0 1.6rem}
+.svc-section{margin-bottom:1.7rem}
+.svc-h{font-size:.95rem;font-weight:800;color:#2c3e50;margin-bottom:.7rem;
+  display:flex;align-items:center;gap:.45rem}
+.svc-h::before{content:"";width:4px;height:1rem;border-radius:2px;
+  background:#2980b9;display:inline-block;flex-shrink:0}
+
+.svc-chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.svc-chip{display:inline-flex;align-items:center;padding:.35rem .75rem;
+  border-radius:999px;font-size:.82rem;font-weight:600;
+  background:#eaf6fd;border:1px solid #aed6f1;color:#21618c;
+  text-decoration:none;transition:all .15s}
+.svc-chip:hover{background:#2980b9;color:#fff;border-color:#2980b9}
+
+.svc-p{color:#5d7a94;font-size:.9rem;line-height:1.7;margin:0 0 .9rem}
+
+.svc-domains{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.6rem}
+.svc-domain{padding:.65rem .85rem;border-radius:10px;
+  background:#f9fafb;border:1px solid #e5e7eb}
+.svc-domain b{display:block;font-size:.85rem;color:#2c3e50;margin-bottom:.2rem}
+.svc-domain span{font-size:.81rem;color:#5d7a94;line-height:1.55}
+
+.svc-inst{margin:0;padding:0;list-style:none;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:.5rem .9rem}
+.svc-inst li{font-size:.86rem;color:#5d7a94;line-height:1.55;
+  padding-left:.9rem;position:relative}
+.svc-inst li::before{content:"—";position:absolute;left:0;color:#aed6f1;font-weight:700}
+.svc-inst b{color:#2c3e50;font-weight:700}
+
+.svc-modes{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem}
+.svc-mode{font-size:.81rem;color:#21618c;background:#eaf6fd;
+  border:1px solid #aed6f1;border-radius:8px;padding:.3rem .6rem}
+
+@media(max-width:640px){
+  .svc-inst{grid-template-columns:1fr}
+}
+</style>
+
+<h3 style="font-size:1.25rem;font-weight:900;color:#2c3e50;margin-bottom:.3rem">
+  👨‍💻 Services
+</h3>
+<p class="svc-intro">Peer review, program committees, and open research collaboration.</p>
+
+<div class="svc-section">
+  <div class="svc-h">📑 Journal Reviewer</div>
+  <div class="svc-chips">
+    <a class="svc-chip" href="https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=6221037" target="_blank" rel="noopener">IEEE Trans. Human-Machine Systems</a>
+    <a class="svc-chip" href="https://dl.acm.org" target="_blank" rel="noopener">ACM</a>
+    <a class="svc-chip" href="https://ieeeaccess.ieee.org" target="_blank" rel="noopener">IEEE Access</a>
+    <a class="svc-chip" href="https://www.mdpi.com/journal/computers" target="_blank" rel="noopener">MDPI Computers</a>
+    <a class="svc-chip" href="https://www.springer.com/journal/11227" target="_blank" rel="noopener">Journal of Supercomputing</a>
+  </div>
+</div>
+
+<div class="svc-section">
+  <div class="svc-h">🎯 Technical Program Committee</div>
+  <div class="svc-chips">
+    <a class="svc-chip" href="https://cyber-science.org/2025/picom/" target="_blank" rel="noopener">PiCom 2025 · Japan</a>
+    <a class="svc-chip" href="https://flta-conference.org/iedge-2025/20251/index.php" target="_blank" rel="noopener">iEDGE 2025 · Croatia</a>
+    <a class="svc-chip" href="https://cyber-science.org/2024/picom/" target="_blank" rel="noopener">PiCom 2024 · Philippines</a>
+    <a class="svc-chip" href="https://2023.quatic.org/" target="_blank" rel="noopener">Quatic 2023 · Portugal</a>
+    <a class="svc-chip" href="http://emcei.net/index.php" target="_blank" rel="noopener">EMCEI 2023 · Italy</a>
+  </div>
+</div>
+
+<div class="svc-section">
+  <div class="svc-h">🤝 Research Collaboration</div>
+  <p class="svc-p">
+    I partner with universities and industry on efficient, deployment-ready AI —
+    model compression for resource-constrained environments and edge deployment
+    with TinyML, applied to smart buildings, agriculture, and healthcare.
+  </p>
+
+  <div class="svc-domains">
+    <div class="svc-domain">
+      <b>TinyML &amp; IoT</b>
+      <span>Pruning, quantization, streaming inference, and reliability under low-power constraints.</span>
+    </div>
+    <div class="svc-domain">
+      <b>Smart Buildings</b>
+      <span>HVAC control, energy optimization, occupancy-aware forecasting, Digital-Twin workflows.</span>
+    </div>
+    <div class="svc-domain">
+      <b>Smart Agriculture</b>
+      <span>Soil moisture (VWC) forecasting, rain/no-rain analysis, multi-depth transfer learning.</span>
+    </div>
+    <div class="svc-domain">
+      <b>Smart Healthcare</b>
+      <span>AI-based classification and prediction models for disease diagnosis.</span>
+    </div>
+  </div>
+
+  <div class="svc-modes">
+    <span class="svc-mode">Joint research &amp; co-authored papers</span>
+    <span class="svc-mode">Shared benchmarks &amp; baselines</span>
+    <span class="svc-mode">Edge deployment pilots (Raspberry Pi, MCUs)</span>
+  </div>
+</div>
+
+<div class="svc-section">
+  <div class="svc-h">🏛️ Collaborating Institutions</div>
+  <ul class="svc-inst">
+    <li><b>University of Cambridge, UK</b> — Deep learning for AI healthcare</li>
+    <li><b>University College Dublin, Ireland</b> — Tiny transformers for smart healthcare forecasting</li>
+    <li><b>University of Queensland, Australia</b> — Hybrid deep learning for AI healthcare</li>
+    <li><b>Huzhou University, China</b> — Applied ML/DL, sentiment analysis, fraud detection</li>
+    <li><b>Hamad Bin Khalifa University, Qatar</b> — Applied DL in security</li>
+    <li><b>University of Rome "Roma Tre", Italy</b> — Applied DL across domains</li>
+    <li><b>University of Calabria, Italy</b> — Smart environments &amp; digital twins</li>
+    <li><b>ICAR-CNR, Italy</b> — TinyML for sensor streams and edge deployability</li>
+    <li><b>North South University, Bangladesh</b> — DL for disease classification</li>
+    <li><b>RUET, Bangladesh</b> — Fault detection &amp; classification via ML/DL</li>
+  </ul>
+</div>
+
+<div class="svc-section">
+  <div class="svc-h">🔭 Open to</div>
+  <p class="svc-p">
+    Collaborations bridging research and real-world impact — efficient transformers,
+    forecasting, and edge AI, especially projects with measurable deployment outcomes
+    and transparent evaluation.
+  </p>
+</div>

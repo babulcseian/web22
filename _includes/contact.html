@@ -1,0 +1,97 @@
+<style>
+.contact-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 2rem;
+}
+.contact-info h4 {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+.contact-row {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  margin-bottom: .6rem;
+  font-size: .95rem;
+  color: #34495e;
+}
+.contact-row .c-label {
+  font-weight: 700;
+  color: #2980b9;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+.contact-row a {
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 600;
+}
+.contact-row a:hover { text-decoration: underline; }
+.contact-photo {
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  height: 260px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+}
+.contact-photo img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+@media (max-width: 640px) {
+  .contact-wrap { grid-template-columns: 1fr; }
+  .contact-photo { order: -1; height: 160px; }
+}
+</style>
+
+<div class="row g-5 mb-5">
+  <div>
+    <h3 class="fw-bold border-bottom pb-3 mb-5">Contact</h3>
+
+    <div class="contact-wrap">
+      <div class="contact-info">
+        <h4>Md Babul Islam</h4>
+
+        <div class="contact-row">
+          <span class="c-label">🏛️ Position</span>
+          <span>Ph.D. Researcher, University of Calabria (UNICAL)</span>
+        </div>
+        <div class="contact-row">
+          <span class="c-label">📍 Italy</span>
+          <span>DIMES, ICT School — Cosenza, Calabria, Italy</span>
+        </div>
+        <div class="contact-row">
+          <span class="c-label">🌍 Ireland</span>
+          <span>Visiting PhD Scholar, University College Dublin — Dublin 04</span>
+        </div>
+        <div class="contact-row">
+          <span class="c-label">📧 Email</span>
+          <span>
+            <a href="mailto:babulcseian@gmail.com">babulcseian@gmail.com</a>
+            &nbsp;·&nbsp;
+            <a href="mailto:mdbabul.islam@dimes.unical.it">mdbabul.islam@dimes.unical.it</a>
+          </span>
+        </div>
+        <div class="contact-row">
+          <span class="c-label">🔬 Lab</span>
+          <span><a href="https://icar.cnr.it" target="_blank" rel="noopener">ICAR-CNR, SPAN Lab</a></span>
+        </div>
+      </div>
+
+      <div class="contact-photo">
+        <img src="{{ site.github.url }}/assets/img/Unical-and-CNR.jpg"
+             alt="University of Calabria and CNR">
+      </div>
+    </div>
+  </div>
+</div>

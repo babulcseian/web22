@@ -1,0 +1,413 @@
+<!--
+  PUBLICATIONS PAGE
+  =================
+  Reads from _data/publications.csv — open it in Excel or Google Sheets to
+  add, edit, or remove a paper. Add a new row, fill in the columns below,
+  save/export as CSV, upload back to the same path. That's it.
+
+  COLUMNS:
+    type       journal | conference | thesis | book   (lowercase, exact match)
+    year       just the number, e.g. 2026
+    title      the paper title
+    authors    every author separated by " | "
+               e.g. "Md Babul Islam | Antonio Guerrieri | Raffaele Gravina"
+    me_author  your own name, spelled EXACTLY as it appears in the authors
+               column above — this is what gets underlined automatically
+    venue      journal/conference name, e.g. "IEEE Sensors Journal (Q1)"
+    doi        DOI link — leave blank if none
+    paper      PDF link — leave blank if none
+    code       code repo link — leave blank if none
+    slides     slides link — leave blank if none
+    videos     video link — leave blank if none
+    dataset    dataset link — leave blank if none
+    figure     image path, e.g. /assets/img/paper/journal/my-figure.jpg
+               leave blank to show a placeholder icon instead
+    fit        "cover" or "contain" — how the figure image is cropped
+
+  YEARS ARE AUTOMATIC — you never need to update a year list anywhere.
+  Add a paper for any year (2020, 2026, 2031 — doesn't matter) and it will
+  appear in its own year group automatically, newest first.
+
+  A stray space before or after any link no longer breaks anything —
+  every field is automatically trimmed before use.
+-->
+
+<style>
+.pub-filter-wrap{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.6rem}
+.pub-filter-btn{padding:.45rem .9rem;border-radius:999px;font-size:.85rem;font-weight:700;
+  border:1px solid #e2e8f0;background:#f8fafc;color:#5d7a94;cursor:pointer;transition:all .15s}
+.pub-filter-btn:hover{border-color:#aed6f1;background:#eaf6fd;color:#21618c}
+.pub-filter-btn.active{background:#2980b9;color:#fff;border-color:#2980b9;
+  box-shadow:0 4px 12px rgba(13,148,136,.25)}
+.pub-count{display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:50%;font-size:.72rem;font-weight:800;
+  background:rgba(255,255,255,.25);margin-left:.3rem;vertical-align:middle}
+.pub-filter-btn:not(.active) .pub-count{background:#e2e8f0;color:#5d7a94}
+
+.pub-year-group{margin-top:1.8rem}
+.pub-year-label{font-size:1.1rem;font-weight:900;color:#2c3e50;
+  padding:.4rem 0;border-bottom:2px solid #e2e8f0;margin-bottom:1rem;
+  display:flex;align-items:center;gap:.5rem}
+.pub-year-label::before{content:"";display:inline-block;width:4px;height:1.1rem;
+  border-radius:2px;background:linear-gradient(180deg,#2980b9,#aed6f1)}
+
+.pubs-outer{display:grid;gap:1rem}
+.pub-card{display:grid;grid-template-columns:108px 1fr;gap:1rem;
+  padding:1rem 1rem 1rem 1.1rem;border-radius:16px;
+  background:#fff;border:1px solid #e9eef3;
+  box-shadow:0 6px 22px rgba(16,24,40,.05);position:relative;overflow:hidden;
+  transition:transform .18s,box-shadow .18s,border-color .18s}
+.pub-card:hover{transform:translateY(-2px);
+  box-shadow:0 14px 34px rgba(16,24,40,.09);border-color:#aed6f1}
+.pub-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:linear-gradient(180deg,#2980b9,#3498db,#f59e0b)}
+
+.pub-fig{width:108px;height:108px;border-radius:10px;object-fit:cover;
+  border:1px solid #eef2f7;flex-shrink:0}
+.pub-fig.contain{object-fit:contain}
+.pub-fig-ph{width:108px;height:108px;border-radius:10px;border:1px solid #eef2f7;
+  background:#f8fafc;display:grid;place-items:center;flex-shrink:0}
+
+.pub-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin-bottom:.3rem}
+.pub-idx{font-weight:900;color:#5d7a94;font-size:.88rem}
+.pub-badge{font-size:.7rem;padding:.18rem .45rem;border-radius:999px;font-weight:700;
+  border:1px solid #e2e8f0;background:#f8fafc;color:#5d7a94}
+.b-journal{background:linear-gradient(90deg,#eaf6fd,#eaf6fd);
+  border-color:#dbeafe;color:#21618c}
+.b-conf{background:#fefce8;border-color:#fde68a;color:#713f12}
+.b-book{background:#eaf6fd;border-color:#aed6f1;color:#1a5276}
+.b-thesis{background:#eaf6fd;border-color:#aed6f1;color:#1a5276}
+
+.pub-title{font-size:.98rem;font-weight:800;line-height:1.35;
+  margin:.2rem 0 .3rem;color:#2c3e50;word-wrap:break-word}
+.pub-authors{font-size:.87rem;color:#5d7a94;line-height:1.5;word-wrap:break-word}
+.pub-venue{font-size:.87rem;color:#2980b9;font-style:italic;margin-top:.1rem}
+.me-strong{font-weight:900;text-decoration:underline;color:#2c3e50}
+
+.pub-actions{margin-top:.55rem;display:flex;flex-wrap:wrap;gap:.4rem}
+.btn-chip{display:inline-flex;align-items:center;gap:.3rem;padding:.33rem .62rem;
+  border-radius:999px;font-weight:700;font-size:.79rem;border:1px solid transparent;
+  text-decoration:none;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.btn-chip:hover{transform:translateY(-1px);box-shadow:0 5px 10px rgba(0,0,0,.07)}
+.c-doi{background:#eaf6fd;border-color:#aed6f1;color:#21618c}
+.c-pdf{background:#eaf6fd;border-color:#aed6f1;color:#21618c}
+.c-code{background:#eaf6fd;border-color:#aed6f1;color:#21618c}
+.c-slides{background:#fff7ed;border-color:#fdba74;color:#9a3412}
+.c-video{background:#eaf6fd;border-color:#aed6f1;color:#21618c}
+.c-dataset{background:#eaf6fd;border-color:#aed6f1;color:#21618c}
+.c-cite{background:#eaf6fd;border-color:#aed6f1;color:#21618c}
+
+.pub-item[hidden]{display:none}
+
+.bib-modal{display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:1rem}
+.bib-modal.open{display:flex}
+.bib-box{background:#fff;border-radius:16px;padding:1.4rem 1.5rem;
+  max-width:640px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.2);position:relative}
+.bib-box h4{margin:0 0 .8rem;font-size:1rem;font-weight:800;color:#111}
+.bib-box pre{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
+  padding:.9rem;font-size:.8rem;line-height:1.6;overflow-x:auto;
+  white-space:pre;color:#2c3e50;margin:0}
+.bib-actions{display:flex;gap:.5rem;margin-top:.8rem}
+.bib-copy-btn{padding:.4rem .9rem;border-radius:999px;font-weight:700;font-size:.82rem;
+  background:#21618c;color:#fff;border:none;cursor:pointer}
+.bib-close-btn{padding:.4rem .9rem;border-radius:999px;font-weight:700;font-size:.82rem;
+  background:#f1f5f9;color:#5d7a94;border:none;cursor:pointer}
+.bib-copied{color:#2980b9;font-size:.8rem;font-weight:700;align-self:center}
+
+@media(max-width:640px){
+  .pub-card{grid-template-columns:1fr}
+  .pub-fig,.pub-fig-ph{width:100%;height:130px}
+}
+</style>
+
+<div class="bib-modal" id="bib-modal" onclick="if(event.target===this)closeBib()">
+  <div class="bib-box">
+    <h4>📋 BibTeX Citation</h4>
+    <pre id="bib-content"></pre>
+    <div class="bib-actions">
+      <button class="bib-copy-btn" onclick="copyBib()">Copy</button>
+      <button class="bib-close-btn" onclick="closeBib()">Close</button>
+      <span class="bib-copied" id="bib-copied" style="display:none">✓ Copied!</span>
+    </div>
+  </div>
+</div>
+
+<script>
+function showBib(key){
+  var el = document.getElementById('bib-'+key);
+  if(!el) return;
+  document.getElementById('bib-content').textContent = el.textContent;
+  document.getElementById('bib-modal').classList.add('open');
+  document.getElementById('bib-copied').style.display='none';
+}
+function closeBib(){ document.getElementById('bib-modal').classList.remove('open'); }
+function copyBib(){
+  var text = document.getElementById('bib-content').textContent;
+  navigator.clipboard.writeText(text).then(function(){
+    var el = document.getElementById('bib-copied');
+    el.style.display='inline';
+    setTimeout(function(){el.style.display='none'},2000);
+  });
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeBib()});
+
+document.addEventListener('DOMContentLoaded',function(){
+  var btns = document.querySelectorAll('.pub-filter-btn');
+  var items = document.querySelectorAll('.pub-item');
+  btns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var filter = this.dataset.filter;
+      btns.forEach(function(b){b.classList.remove('active')});
+      this.classList.add('active');
+      items.forEach(function(item){
+        if(filter==='all'||item.dataset.type===filter){ item.removeAttribute('hidden'); }
+        else { item.setAttribute('hidden',''); }
+      });
+      document.querySelectorAll('.pub-year-group').forEach(function(grp){
+        var visible=grp.querySelectorAll('.pub-item:not([hidden])').length>0;
+        grp.style.display=visible?'':'none';
+      });
+    });
+  });
+});
+</script>
+
+<!--
+  DYNAMIC YEAR + TYPE COMPUTATION
+  This block figures out, from the actual data, which years exist and
+  how many papers of each type there are — nothing here is hardcoded,
+  so a paper for any new year just works automatically.
+-->
+{% assign all_pubs = site.data.publications %}
+{% assign jtotal = all_pubs | where: "type", "journal" | size %}
+{% assign ctotal = all_pubs | where: "type", "conference" | size %}
+{% assign ttotal = all_pubs | where: "type", "thesis" | size %}
+{% assign btotal = all_pubs | where: "type", "book" | size %}
+{% assign grand_total = all_pubs | size %}
+
+{% assign years_raw = "" %}
+{% for item in all_pubs %}
+  {% assign years_raw = years_raw | append: item.year %}
+  {% unless forloop.last %}{% assign years_raw = years_raw | append: "," %}{% endunless %}
+{% endfor %}
+{% assign years_list = years_raw | split: "," | uniq | sort | reverse %}
+
+<div class="pub-filter-wrap">
+  <button class="pub-filter-btn active" data-filter="all" type="button">
+    All <span class="pub-count">{{ grand_total }}</span>
+  </button>
+  <button class="pub-filter-btn" data-filter="journal" type="button">
+    📄 Journals <span class="pub-count">{{ jtotal }}</span>
+  </button>
+  <button class="pub-filter-btn" data-filter="conference" type="button">
+    🎤 Conferences <span class="pub-count">{{ ctotal }}</span>
+  </button>
+  {% if btotal > 0 %}
+  <button class="pub-filter-btn" data-filter="book" type="button">
+    📚 Book Chapters <span class="pub-count">{{ btotal }}</span>
+  </button>
+  {% else %}
+  <button class="pub-filter-btn" data-filter="book" type="button">📚 Book Chapters</button>
+  {% endif %}
+  <button class="pub-filter-btn" data-filter="thesis" type="button">
+    🎓 Thesis <span class="pub-count">{{ ttotal }}</span>
+  </button>
+</div>
+
+<div class="pubs-outer">
+{% for year in years_list %}
+  {% assign year_items = all_pubs | where: "year", year %}
+  {% assign year_has_items = year_items | size %}
+  {% if year_has_items > 0 %}
+  <div class="pub-year-group">
+    <div class="pub-year-label">{{ year }}</div>
+
+    {% assign jitems = year_items | where: "type", "journal" %}
+    {% for item in jitems %}
+      {% assign jnum = year | append: "-J" | append: forloop.index %}
+      {% assign bkey = item.authors | split: "|" | first | strip | split: " " | last | append: item.year %}
+      <div class="pub-item" data-type="journal">
+        <article class="pub-card" id="{{ jnum }}">
+          {% assign fig = item.figure | strip %}
+          {% if fig != "" %}
+            <img class="pub-fig{% if item.fit == 'contain' %} contain{% endif %}"
+                 src="{{ fig | relative_url }}" alt="figure"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+            <div class="pub-fig-ph" style="display:none" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="40"><path d="M4 5h16v14H4z" stroke="#cbd5e1" stroke-width="1.5"/><path d="M4 15l4-4 5 5 3-3 4 4" stroke="#cbd5e1" stroke-width="1.5"/></svg>
+            </div>
+          {% else %}
+            <div class="pub-fig-ph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="40"><path d="M4 5h16v14H4z" stroke="#cbd5e1" stroke-width="1.5"/><path d="M4 15l4-4 5 5 3-3 4 4" stroke="#cbd5e1" stroke-width="1.5"/></svg>
+            </div>
+          {% endif %}
+          <div>
+            <div class="pub-meta">
+              <span class="pub-idx">[{{ jnum }}]</span>
+              <span class="pub-badge b-journal">Journal</span>
+              <span class="pub-badge">{{ item.year }}</span>
+            </div>
+            <h5 class="pub-title">{{ item.title | strip }}</h5>
+            <div class="pub-authors">
+              {% assign author_list = item.authors | split: "|" %}
+              {% assign me = item.me_author | strip %}
+              {% for a in author_list %}
+                {% assign a_trim = a | strip %}
+                {% if forloop.index0 > 0 %}, {% endif %}
+                {% if a_trim == me %}<span class="me-strong">{{ a_trim }}</span>{% else %}{{ a_trim }}{% endif %}
+              {% endfor %}
+            </div>
+            {% assign venue = item.venue | strip %}
+            {% if venue != "" %}<div class="pub-venue">{{ venue }}</div>{% endif %}
+            <div class="pub-actions">
+              {% assign doi = item.doi | strip %}{% if doi != "" %}<a class="btn-chip c-doi" href="{{ doi }}" target="_blank" rel="noopener">DOI</a>{% endif %}
+              {% assign paper = item.paper | strip %}{% if paper != "" %}<a class="btn-chip c-pdf" href="{{ paper }}" target="_blank" rel="noopener">PDF</a>{% endif %}
+              {% assign slides = item.slides | strip %}{% if slides != "" %}<a class="btn-chip c-slides" href="{{ slides }}" target="_blank" rel="noopener">Slides</a>{% endif %}
+              {% assign videos = item.videos | strip %}{% if videos != "" %}<a class="btn-chip c-video" href="{{ videos }}" target="_blank" rel="noopener">Video</a>{% endif %}
+              {% assign code = item.code | strip %}{% if code != "" %}<a class="btn-chip c-code" href="{{ code }}" target="_blank" rel="noopener">Code</a>{% endif %}
+              {% assign dataset = item.dataset | strip %}{% if dataset != "" %}<a class="btn-chip c-dataset" href="{{ dataset }}" target="_blank" rel="noopener">Dataset</a>{% endif %}
+              <button class="btn-chip c-cite" onclick="showBib('{{ bkey }}-{{ jnum }}')">📋 Cite</button>
+            </div>
+          </div>
+        </article>
+        <pre id="bib-{{ bkey }}-{{ jnum }}" style="display:none">@article{{"{"}}{{ bkey }}-{{ jnum }},
+  author = {{ "{" }}{% for a in author_list %}{{ a | strip }}{% unless forloop.last %} and {% endunless %}{% endfor %}},
+  title  = {{ "{" }}{{ item.title | strip }}},
+  journal= {{ "{" }}{{ venue }}},
+  year   = {{ "{" }}{{ item.year }}},
+  {% if doi != "" %}doi    = {{ "{" }}{{ doi }}},{% endif %}
+
+}</pre>
+      </div>
+    {% endfor %}
+
+    {% assign citems = year_items | where: "type", "conference" %}
+    {% for item in citems %}
+      {% assign cnum = year | append: "-C" | append: forloop.index %}
+      {% assign bkey = item.authors | split: "|" | first | strip | split: " " | last | append: item.year %}
+      <div class="pub-item" data-type="conference">
+        <article class="pub-card" id="{{ cnum }}">
+          {% assign fig = item.figure | strip %}
+          {% if fig != "" %}
+            <img class="pub-fig{% if item.fit == 'contain' %} contain{% endif %}"
+                 src="{{ fig | relative_url }}" alt="figure"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+            <div class="pub-fig-ph" style="display:none" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="40"><path d="M4 5h16v14H4z" stroke="#cbd5e1" stroke-width="1.5"/><path d="M4 15l4-4 5 5 3-3 4 4" stroke="#cbd5e1" stroke-width="1.5"/></svg>
+            </div>
+          {% else %}
+            <div class="pub-fig-ph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="40"><path d="M4 5h16v14H4z" stroke="#cbd5e1" stroke-width="1.5"/><path d="M4 15l4-4 5 5 3-3 4 4" stroke="#cbd5e1" stroke-width="1.5"/></svg>
+            </div>
+          {% endif %}
+          <div>
+            <div class="pub-meta">
+              <span class="pub-idx">[{{ cnum }}]</span>
+              <span class="pub-badge b-conf">Conference</span>
+              <span class="pub-badge">{{ item.year }}</span>
+            </div>
+            <h5 class="pub-title">{{ item.title | strip }}</h5>
+            <div class="pub-authors">
+              {% assign author_list = item.authors | split: "|" %}
+              {% assign me = item.me_author | strip %}
+              {% for a in author_list %}
+                {% assign a_trim = a | strip %}
+                {% if forloop.index0 > 0 %}, {% endif %}
+                {% if a_trim == me %}<span class="me-strong">{{ a_trim }}</span>{% else %}{{ a_trim }}{% endif %}
+              {% endfor %}
+            </div>
+            {% assign venue = item.venue | strip %}
+            {% if venue != "" %}<div class="pub-venue">{{ venue }}</div>{% endif %}
+            <div class="pub-actions">
+              {% assign doi = item.doi | strip %}{% if doi != "" %}<a class="btn-chip c-doi" href="{{ doi }}" target="_blank" rel="noopener">DOI</a>{% endif %}
+              {% assign paper = item.paper | strip %}{% if paper != "" %}<a class="btn-chip c-pdf" href="{{ paper }}" target="_blank" rel="noopener">PDF</a>{% endif %}
+              {% assign slides = item.slides | strip %}{% if slides != "" %}<a class="btn-chip c-slides" href="{{ slides }}" target="_blank" rel="noopener">Slides</a>{% endif %}
+              {% assign videos = item.videos | strip %}{% if videos != "" %}<a class="btn-chip c-video" href="{{ videos }}" target="_blank" rel="noopener">Video</a>{% endif %}
+              {% assign code = item.code | strip %}{% if code != "" %}<a class="btn-chip c-code" href="{{ code }}" target="_blank" rel="noopener">Code</a>{% endif %}
+              {% assign dataset = item.dataset | strip %}{% if dataset != "" %}<a class="btn-chip c-dataset" href="{{ dataset }}" target="_blank" rel="noopener">Dataset</a>{% endif %}
+              <button class="btn-chip c-cite" onclick="showBib('{{ bkey }}-{{ cnum }}')">📋 Cite</button>
+            </div>
+          </div>
+        </article>
+        <pre id="bib-{{ bkey }}-{{ cnum }}" style="display:none">@inproceedings{{"{"}}{{ bkey }}-{{ cnum }},
+  author   = {{ "{" }}{% for a in author_list %}{{ a | strip }}{% unless forloop.last %} and {% endunless %}{% endfor %}},
+  title    = {{ "{" }}{{ item.title | strip }}},
+  booktitle= {{ "{" }}{{ venue }}},
+  year     = {{ "{" }}{{ item.year }}},
+  {% if doi != "" %}doi      = {{ "{" }}{{ doi }}},{% endif %}
+
+}</pre>
+      </div>
+    {% endfor %}
+
+    {% assign titems = year_items | where: "type", "thesis" %}
+    {% for item in titems %}
+      <div class="pub-item" data-type="thesis">
+        <article class="pub-card" id="T1">
+          <div class="pub-fig-ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" width="40"><path d="M6 7h12M6 11h8M6 15h10" stroke="#cbd5e1" stroke-width="1.5"/></svg>
+          </div>
+          <div>
+            <div class="pub-meta">
+              <span class="pub-idx">[T1]</span>
+              <span class="pub-badge b-thesis">Thesis</span>
+              <span class="pub-badge">{{ item.year }}</span>
+            </div>
+            <h5 class="pub-title">{{ item.title | strip }}</h5>
+            {% assign venue = item.venue | strip %}
+            {% if venue != "" %}<div class="pub-venue">{{ venue }}</div>{% endif %}
+            <div class="pub-actions">
+              {% assign doi = item.doi | strip %}{% if doi != "" %}<a class="btn-chip c-doi" href="{{ doi }}" target="_blank" rel="noopener">DOI</a>{% endif %}
+              {% assign paper = item.paper | strip %}{% if paper != "" %}<a class="btn-chip c-pdf" href="{{ paper }}" target="_blank" rel="noopener">PDF</a>{% endif %}
+              <button class="btn-chip c-cite" onclick="showBib('thesisT1')">📋 Cite</button>
+            </div>
+          </div>
+        </article>
+        <pre id="bib-thesisT1" style="display:none">@phdthesis{{"{"}}Islam{{ item.year }},
+  author = {{ "{" }}Md Babul Islam},
+  title  = {{ "{" }}{{ item.title | strip }}},
+  school = {{ "{" }}{{ venue | default: "University of Calabria" }}},
+  year   = {{ "{" }}{{ item.year }}},
+}</pre>
+      </div>
+    {% endfor %}
+
+    {% assign bitems = year_items | where: "type", "book" %}
+    {% for item in bitems %}
+      <div class="pub-item" data-type="book">
+        <article class="pub-card" id="B1">
+          <div class="pub-fig-ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" width="40"><path d="M6 4h9a2 2 0 012 2v14l-5.5-3L6 20V6a2 2 0 012-2z" stroke="#cbd5e1" stroke-width="1.5"/></svg>
+          </div>
+          <div>
+            <div class="pub-meta">
+              <span class="pub-idx">[B]</span>
+              <span class="pub-badge b-book">Book Chapter</span>
+              <span class="pub-badge">{{ item.year }}</span>
+            </div>
+            <h5 class="pub-title">{{ item.title | strip }}</h5>
+            <div class="pub-authors">
+              {% assign author_list = item.authors | split: "|" %}
+              {% assign me = item.me_author | strip %}
+              {% for a in author_list %}
+                {% assign a_trim = a | strip %}
+                {% if forloop.index0 > 0 %}, {% endif %}
+                {% if a_trim == me %}<span class="me-strong">{{ a_trim }}</span>{% else %}{{ a_trim }}{% endif %}
+              {% endfor %}
+            </div>
+            {% assign venue = item.venue | strip %}
+            {% if venue != "" %}<div class="pub-venue">{{ venue }}</div>{% endif %}
+            <div class="pub-actions">
+              {% assign doi = item.doi | strip %}{% if doi != "" %}<a class="btn-chip c-doi" href="{{ doi }}" target="_blank" rel="noopener">DOI</a>{% endif %}
+              {% assign paper = item.paper | strip %}{% if paper != "" %}<a class="btn-chip c-pdf" href="{{ paper }}" target="_blank" rel="noopener">PDF</a>{% endif %}
+            </div>
+          </div>
+        </article>
+      </div>
+    {% endfor %}
+
+  </div>
+  {% endif %}
+{% endfor %}
+</div>

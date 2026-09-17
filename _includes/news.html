@@ -1,0 +1,116 @@
+<!--
+  NEWS SECTION
+  ============
+  Reads from _data/news.csv — open it in Excel or Google Sheets to add a
+  new item. Add ONE new row at the TOP (newest first), fill in:
+
+    date          e.g. "January 2026"
+    headline      short bold title, e.g. "Paper Accepted at PiCom 2026"
+    description   one or two plain sentences — no HTML needed
+    link1_text    label for the first button, e.g. "PiCom 2026"  (optional)
+    link1_url     the URL for that button                        (optional)
+    link2_text    label for a second button, e.g. "Certificate"  (optional)
+    link2_url     the URL for that button                        (optional)
+
+  Leave link2_text/link2_url empty if there's only one link.
+  You never type <a>, <b>, or any HTML tag — the template builds it all,
+  so a missing href= or an unclosed tag can no longer happen.
+
+  This section always shows the 5 most recent items, with a single
+  "Show all" button revealing everything else at once — same behavior
+  on the Home page and the dedicated News page.
+-->
+<style>
+.news-section-head{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:1.2rem;font-weight:900;color:#2c3e50;
+  border-bottom:2px solid #e2e8f0;padding-bottom:.5rem;margin-bottom:1.4rem}
+.news-section-head::before{content:"";display:inline-block;
+  width:4px;height:1.1rem;border-radius:2px;background:#2980b9}
+
+.news-wrap{display:flex;flex-direction:column;gap:0}
+.news-item{display:flex;flex-direction:row;gap:0;align-items:stretch;
+  animation:newsIn .35s ease both}
+@keyframes newsIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.news-left{display:flex;flex-direction:column;align-items:center;
+  width:42px;flex-shrink:0;padding-top:18px}
+.news-dot{width:14px;height:14px;border-radius:50%;
+  background:#fff;border:3px solid #2980b9;flex-shrink:0;z-index:1;
+  box-shadow:0 0 0 3px #eaf6fd}
+.news-line{flex:1;width:2px;background:#d9e6e3;margin-top:5px;min-height:16px}
+.news-item:last-child .news-line{background:transparent}
+
+.news-card{flex:1;margin:10px 0 6px 14px;padding:.85rem 1.05rem;
+  border-radius:12px;background:#fff;border:1px solid #e5efec;
+  box-shadow:0 2px 10px rgba(15,23,42,.045);
+  transition:border-color .15s,box-shadow .15s,transform .15s}
+.news-card:hover{border-color:#aed6f1;box-shadow:0 8px 22px rgba(13,148,136,.1);
+  transform:translateY(-1px)}
+.news-date{font-size:.73rem;font-weight:800;color:#2980b9;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.news-headline{font-size:.98rem;font-weight:800;color:#2c3e50;
+  margin:0 0 .28rem;line-height:1.4}
+.news-desc{font-size:.88rem;color:#5d7a94;line-height:1.62;margin:0 0 .55rem}
+.news-btns{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem}
+.news-btn{display:inline-flex;align-items:center;gap:.3rem;
+  padding:.35rem .68rem;border-radius:999px;font-weight:700;font-size:.8rem;
+  border:1px solid #aed6f1;background:#eaf6fd;color:#21618c;
+  text-decoration:none;transition:all .15s}
+.news-btn:hover{background:#2980b9;color:#fff;border-color:#2980b9;transform:translateY(-1px)}
+.news-btn.cert{background:#eef4f9;border-color:#c3d9e8;color:#1a5276}
+.news-btn.cert:hover{background:#1a5276;color:#fff;border-color:#1a5276}
+.news-location{display:inline-flex;align-items:center;gap:.3rem;
+  padding:.32rem .62rem;border-radius:999px;font-weight:700;font-size:.78rem;
+  background:#fff8e6;border:1px solid #fbd98d;color:#8a5a00}
+
+.news-more-wrap{text-align:center;margin:1rem 0 .3rem}
+.news-more-btn{display:inline-flex;align-items:center;gap:.45rem;
+  padding:.55rem 1.3rem;border-radius:999px;font-weight:700;font-size:.88rem;
+  background:#eaf6fd;border:1.5px solid #aed6f1;color:#21618c;
+  cursor:pointer;transition:all .15s}
+.news-more-btn:hover{background:#2980b9;color:#fff;border-color:#2980b9;
+  box-shadow:0 6px 16px rgba(13,148,136,.25);transform:translateY(-1px)}
+.news-more-btn .count{background:rgba(13,148,136,.12);color:#21618c;
+  font-size:.76rem;font-weight:800;padding:.05rem .45rem;border-radius:999px}
+.news-more-btn:hover .count{background:rgba(255,255,255,.25);color:#fff}
+.news-hidden{display:none !important}
+
+@media(max-width:640px){
+  .news-left{width:32px}
+  .news-card{font-size:.87rem;padding:.7rem .85rem;margin-left:10px}
+}
+</style>
+
+<div class="news-section-head">📰 {% if page.title == "Home" %}Latest News{% else %}News{% endif %}</div>
+
+<div class="news-wrap" id="news-list">
+  {% for item in site.data.news %}
+  <div class="news-item{% if forloop.index > 5 %} news-hidden{% endif %}">
+    <div class="news-left"><div class="news-dot"></div><div class="news-line"></div></div>
+    <div class="news-card">
+      <div class="news-date">{{ item.date | strip }}</div>
+      <p class="news-headline">{{ item.headline | strip }}</p>
+      {% assign desc = item.description | strip %}
+      {% if desc != "" %}<p class="news-desc">{{ desc }}</p>{% endif %}
+      <div class="news-btns">
+        {% assign loc = item.location | strip %}
+        {% if loc != "" %}<span class="news-location">📍 {{ loc }}</span>{% endif %}
+        {% assign l1u = item.link1_url | strip %}
+        {% if l1u != "" %}<a class="news-btn" href="{{ l1u }}" target="_blank" rel="noopener">{{ item.link1_text | strip | default: "Link" }}</a>{% endif %}
+        {% assign l2u = item.link2_url | strip %}
+        {% if l2u != "" %}<a class="news-btn cert" href="{{ l2u }}" target="_blank" rel="noopener">{{ item.link2_text | strip | default: "Link" }}</a>{% endif %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% assign news_total = site.data.news | size %}
+{% if news_total > 5 %}
+<div class="news-more-wrap">
+  <button class="news-more-btn" type="button"
+    onclick="document.querySelectorAll('#news-list .news-item.news-hidden').forEach(function(el){el.classList.remove('news-hidden')});this.style.display='none'">
+    Show all news <span class="count">{{ news_total }}</span>
+  </button>
+</div>
+{% endif %}

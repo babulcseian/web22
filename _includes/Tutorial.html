@@ -1,0 +1,190 @@
+<!--
+  TUTORIAL PAGE
+  =============
+  To add a tutorial: edit _data/tutorials.yml
+  Copy any existing entry block and fill in:
+    id:        unique ID (tut6, tut7, ...)
+    title:     Tutorial title
+    date:      "Month Year"
+    read_time: "N min"
+    category:  one of: TinyML | Smart Buildings | Federated Learning | Deep Learning | IoT
+    image:     filename only, e.g. "my-figure.jpg"  (NO spaces, put file in assets/img/paper/journal/)
+    image_dir: subfolder inside assets/img/ — e.g. "paper/journal" or "paper/conf"
+    summary:   one or two sentence description shown on the card
+    content:   full HTML content shown when expanded (use <p> <h5> <strong> tags)
+    links:     list of {text: "Label", url: "https://..."} buttons (optional)
+-->
+
+<style>
+/* ── Tutorial page styles ────────────────────── */
+.tut-header{margin-bottom:1.6rem}
+.tut-filter{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.4rem}
+.tut-filter-btn{padding:.38rem .8rem;border-radius:999px;font-size:.82rem;
+  font-weight:700;border:1px solid var(--border,#e2e8f0);
+  background:#f8fafc;color:#5d7a94;cursor:pointer;transition:all .15s}
+.tut-filter-btn:hover{border-color:#aed6f1;background:#eaf6fd;color:#21618c}
+.tut-filter-btn.active{background:#2980b9;color:#fff;border-color:#2980b9;
+  box-shadow:0 4px 12px rgba(13,148,136,.25)}
+
+.tut-list{display:grid;gap:1rem}
+.tut-card{border-radius:16px;background:#fff;border:1px solid #e2e8f0;
+  box-shadow:0 4px 18px rgba(0,0,0,.05);overflow:hidden;
+  transition:box-shadow .18s,border-color .18s}
+.tut-card:hover{box-shadow:0 10px 28px rgba(0,0,0,.09);border-color:#aed6f1}
+.tut-card[hidden]{display:none}
+
+/* Card header row */
+.tut-card-head{display:grid;grid-template-columns:80px 1fr auto;
+  gap:.8rem;align-items:center;padding:.85rem 1rem;cursor:pointer}
+.tut-thumb{width:80px;height:72px;border-radius:10px;object-fit:cover;
+  border:1px solid #e2e8f0;background:#f3f5f9;flex-shrink:0}
+.tut-thumb-ph{width:80px;height:72px;border-radius:10px;
+  background:#eaf6fd;border:1px solid #aed6f1;
+  display:grid;place-items:center;flex-shrink:0}
+.tut-info{}
+.tut-cat{font-size:.7rem;font-weight:800;padding:.18rem .5rem;
+  border-radius:999px;background:#eaf6fd;border:1px solid #aed6f1;
+  color:#21618c;margin-bottom:.3rem;display:inline-block}
+.tut-title{font-size:.97rem;font-weight:800;color:#2c3e50;
+  line-height:1.35;margin:.2rem 0 .2rem}
+.tut-meta{font-size:.78rem;color:#5d7a94;display:flex;gap:.6rem;flex-wrap:wrap}
+.tut-meta span{display:inline-flex;align-items:center;gap:.2rem}
+.tut-summary{font-size:.85rem;color:#5d7a94;line-height:1.5;
+  margin:.2rem 0 0;display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden}
+
+/* Toggle chevron */
+.tut-toggle{width:32px;height:32px;border-radius:50%;border:1px solid #e2e8f0;
+  background:#f8fafc;display:grid;place-items:center;flex-shrink:0;
+  transition:transform .25s,background .15s}
+.tut-toggle svg{transition:transform .25s;color:#5d7a94}
+.tut-card.open .tut-toggle{background:#2980b9;border-color:#2980b9}
+.tut-card.open .tut-toggle svg{transform:rotate(180deg);color:#fff}
+
+/* Expanded content */
+.tut-body{display:none;border-top:1px solid #f1f5f9;
+  padding:1rem 1rem 1rem 1.6rem;font-size:.92rem;color:#34495e;line-height:1.7}
+.tut-card.open .tut-body{display:block}
+.tut-body h5{color:#21618c;font-weight:800;margin:1rem 0 .3rem;font-size:.95rem}
+.tut-body p{margin:.3rem 0}
+.tut-body strong{color:#2c3e50}
+.tut-links{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.9rem}
+.tut-link-btn{display:inline-flex;align-items:center;gap:.3rem;
+  padding:.35rem .7rem;border-radius:999px;font-weight:700;font-size:.8rem;
+  background:#eaf6fd;border:1px solid #aed6f1;color:#21618c;
+  text-decoration:none;transition:all .12s}
+.tut-link-btn:hover{background:#2980b9;color:#fff;border-color:#2980b9;
+  transform:translateY(-1px)}
+
+@media(max-width:600px){
+  .tut-card-head{grid-template-columns:64px 1fr auto;gap:.6rem}
+  .tut-thumb,.tut-thumb-ph{width:64px;height:56px}
+  .tut-title{font-size:.9rem}
+}
+</style>
+
+<script>
+function tutToggle(id){
+  var card=document.getElementById(id);
+  if(!card)return;
+  card.classList.toggle('open');
+}
+function tutFilter(btn, cat){
+  document.querySelectorAll('.tut-filter-btn').forEach(function(b){
+    b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  document.querySelectorAll('.tut-card').forEach(function(card){
+    if(cat==='all'||card.dataset.cat===cat){
+      card.removeAttribute('hidden');
+    } else {
+      card.setAttribute('hidden','');
+    }
+  });
+}
+</script>
+
+<h3 class="section-title" style="font-size:1.25rem;font-weight:900;
+  color:#2c3e50;border-bottom:2px solid #e2e8f0;padding-bottom:.5rem;
+  margin-bottom:1rem;display:flex;align-items:center;gap:.4rem">
+  <span style="display:inline-block;width:4px;height:1.1rem;border-radius:2px;
+    background:#2980b9;margin-right:.2rem"></span>
+  📚 Tutorials &amp; Technical Blog
+</h3>
+
+<p style="font-size:.92rem;color:#5d7a94;margin-bottom:1.2rem">
+  Practical walkthroughs on TinyML, Smart Buildings, Federated Learning, and IoT —
+  based on real research and datasets.
+  To add a new tutorial, edit <code>_data/tutorials.yml</code>.
+</p>
+
+<!-- Category filter -->
+<div class="tut-filter">
+  <button class="tut-filter-btn active" onclick="tutFilter(this,'all')">All ({{ site.data.tutorials | size }})</button>
+  <button class="tut-filter-btn" onclick="tutFilter(this,'TinyML')">🧠 TinyML</button>
+  <button class="tut-filter-btn" onclick="tutFilter(this,'Smart Buildings')">🏢 Smart Buildings</button>
+  <button class="tut-filter-btn" onclick="tutFilter(this,'Federated Learning')">🔗 Federated Learning</button>
+  <button class="tut-filter-btn" onclick="tutFilter(this,'Deep Learning')">🤖 Deep Learning</button>
+  <button class="tut-filter-btn" onclick="tutFilter(this,'IoT')">📡 IoT</button>
+</div>
+
+<!-- Tutorial cards — rendered from _data/tutorials.yml -->
+<div class="tut-list">
+{% for tut in site.data.tutorials %}
+<div class="tut-card" id="{{ tut.id }}" data-cat="{{ tut.category }}">
+
+  <!-- Clickable header row -->
+  <div class="tut-card-head" onclick="tutToggle('{{ tut.id }}')" role="button"
+       tabindex="0" aria-expanded="false"
+       onkeydown="if(event.key==='Enter'||event.key===' ')tutToggle('{{ tut.id }}')">
+    <!-- Thumbnail -->
+    {% if tut.image and tut.image != "" %}
+      <img class="tut-thumb"
+           src="{{ site.github.url }}/assets/img/{{ tut.image_dir }}/{{ tut.image }}"
+           alt="{{ tut.title }}"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <div class="tut-thumb-ph" style="display:none" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" width="28"><path d="M12 6v6m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#2980b9" stroke-width="1.5"/></svg>
+      </div>
+    {% else %}
+      <div class="tut-thumb-ph" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" width="28"><path d="M12 6v6m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#2980b9" stroke-width="1.5"/></svg>
+      </div>
+    {% endif %}
+
+    <!-- Title + meta -->
+    <div class="tut-info">
+      <span class="tut-cat">{{ tut.category }}</span>
+      <div class="tut-title">{{ tut.title }}</div>
+      <div class="tut-meta">
+        <span>📅 {{ tut.date }}</span>
+        {% if tut.read_time %}<span>⏱ {{ tut.read_time }} read</span>{% endif %}
+      </div>
+      {% if tut.summary %}<div class="tut-summary">{{ tut.summary }}</div>{% endif %}
+    </div>
+
+    <!-- Chevron -->
+    <div class="tut-toggle" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+        <path d="M5 7.5l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Expandable body -->
+  <div class="tut-body">
+    {{ tut.content }}
+    {% if tut.links %}
+    <div class="tut-links">
+      {% for lnk in tut.links %}
+        <a class="tut-link-btn" href="{{ lnk.url }}" target="_blank" rel="noopener">
+          🔗 {{ lnk.text }}
+        </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endfor %}
+</div>

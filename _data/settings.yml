@@ -1,0 +1,15 @@
+menu:
+- {name: 'News', url: '/news'}
+- {name: 'Publications', url: '/publications'}
+- {name: 'Services', url: '/services'}
+- {name: 'Work', url: '/work'}
+- {name: 'Tutorial', url: '/Tutorial'}
+- {name: 'CV', url: ''}
+- {name: 'Contact', url: '/contact'}
+
+social:
+- {icon: 'fab fa-linkedin fa-3x', link: 'https://www.linkedin.com/in/babulcseian/'}
+- {icon: 'fab fa-github fa-3x', link: 'https://github.com/babulcseian'}
+- {icon: 'ai ai-google-scholar fa-3x', link: 'https://scholar.google.com/citations?user=Zaf5EhQAAAAJ&hl=en&authuser=1'}
+- {icon: 'fab fa-orcid fa-3x', link: 'https://orcid.org/my-orcid?orcid=0000-0003-1054-3036'}
+- {icon: 'ai ai-clarivate fa-3x', link: 'https://www.webofscience.com/wos/author/record/AFA-6874-2022'}
